@@ -1,5 +1,5 @@
 <template>
-  <div class="container"> 
+  <div class="container">
     <div class="input-group mb-3">
       <div class="input-group-prepend"><span class="input-group-text" id="basic-addon1">Correo: </span></div>
       <input v-model="email" type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
@@ -20,6 +20,7 @@
       <div class="input-group-prepend" id="button-addon3">
         <button v-on:click="actualizar" class="btn btn-outline-primary" type="button">Actualizar datos</button>
         <button v-on:click="eliminar" class="btn btn-outline-danger" type="button">Eliminar cuenta</button>
+        <button v-on:click="volver" class="btn btn-outline-info" type="button">Volver</button>
       </div>
     </div>
   </div>
@@ -40,7 +41,7 @@ export default {
   },
   // Cargar los datos del usuario
   mounted: function(){
-    axios.get(`http://localhost:3000/api/users/${localStorage.usuario}`)
+    axios.get(`users/${localStorage.usuario}`)
     .then( data =>{
       this.email = data.data.email
       this.name = data.data.name
@@ -56,7 +57,7 @@ export default {
         password: this.password,
         money: this.money
       }
-      axios.put(`http://localhost:3000/api/users/${localStorage.usuario}`, json)
+      axios.put(`users/${localStorage.usuario}`, json)
       .then( data =>{
         this.email = data.data.email
         this.name = data.data.name
@@ -66,12 +67,15 @@ export default {
     },
     // Eliminar cuenta del usuario
     eliminar: function(){
-      axios.delete(`http://localhost:3000/api/users/${localStorage.usuario}`)
+      axios.delete(`users/${localStorage.usuario}`)
       .then( data =>{
         console.log(data.data)
         localStorage.removeItem('usuario');
-        this.$router.push('/');
+        this.$store.dispatch("logout");
       })     
+    },
+    volver: function() {
+      this.$router.push('ruleta');
     }
   }
 }

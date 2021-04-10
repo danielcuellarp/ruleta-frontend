@@ -9,9 +9,9 @@
         <label for="exampleInputPassword1">Contraseña</label>
         <input v-model="password" type="password" class="form-control" id="exampleInputPassword1">
       </div>
-      <button type="submit" class="btn btn-primary">Ingresar</button>
+      <button type="submit" class="btn btn-primary mb-3">Ingresar</button>
     </form>
-    <div class="alert alert-danger" role="alert" v-if="error">
+    <div class="alert alert-danger mb-3" role="alert" v-if="error">
         {{errorMessage}}
     </div>
     <a v-on:click="registrar" href="#" class="badge badge-light">¿No tienes cuenta? Registrate aqui.</a>
@@ -20,6 +20,7 @@
 
 <script>
 import axios from 'axios';
+axios.defaults.baseURL = process.env.VUE_APP_API
 
 export default {
   name: 'Home',
@@ -40,21 +41,22 @@ export default {
         "email": this.email,
         "password": this.password
       };
-      // Consulto la api para obtener el usuario
-      axios.post('http://localhost:3000/api/users/login', json)
+      // Consulto la api para obtener el usuario      
+      axios.post(`users/login`, json)
       .then( data =>{
         if (data.data.error === ""){
-          this.error = false;
-          localStorage.usuario = data.data.usuario;
-          this.$router.push('ruleta');
+          this.error = false
+          localStorage.usuario = data.data.usuario
+          this.$store.dispatch("saveUserLogged", data.data.usuario)
+          this.$router.push('ruleta')
         } else {
-          this.error = true;
-          this.errorMessage = data.data.error;
+          this.error = true
+          this.errorMessage = data.data.error
         }
       })
     },
     registrar(){
-      this.$router.push('registrar');
+      this.$router.push('registrar')
     }
   }
 }

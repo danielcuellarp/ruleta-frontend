@@ -51,6 +51,7 @@ export default {
     return {
       name: "",
       money: 0,
+      moneyOriginal: 0,
       color: "",
       moneyHelp: "",
       error: false,
@@ -65,14 +66,15 @@ export default {
   },
   methods:{
     cargarDatos(){
-      axios.get(`http://localhost:3000/api/users/${localStorage.usuario}`)
+      axios.get(`users/${localStorage.usuario}`)
       .then( data =>{
         this.name = data.data.name;
         this.money = data.data.money;
+        this.moneyOriginal = data.data.money;
         if(this.money <= 1000){
           this.moneyHelp = "Tienes el minimo permitido, vas All in."
         } else {
-          this.moneyHelp = `Dinero disponible: ${this.money} (Solo puede apostar entre el 11% y 19%).`
+          this.moneyHelp = `Dinero disponible: ${this.moneyOriginal} (Solo puede apostar entre el 11% y 19%).`
         }
       })
     },
@@ -85,7 +87,7 @@ export default {
     // Cerrar sesion
     salir(){
       localStorage.removeItem('usuario');
-      this.$router.push('/');
+      this.$store.dispatch("logout");
     },
 
     // Jugar apuesta
@@ -99,6 +101,9 @@ export default {
       } else if (this.money === 0){
         this.error = true
         this.errorMessage = "El valor de la apuesta no puede ser cero."
+      } else if(this.money >= this.moneyOriginal){
+        this.error = true
+        this.errorMessage = "El valor de la apuesta es mayor al dinero disponible."
       } else { 
         let json = {
           color: this.color,
@@ -107,7 +112,7 @@ export default {
         }        
 
         // Consulto el endpoint de la apuesta
-        axios.post('http://localhost:3000/api/ruleta', json)
+        axios.post('ruleta', json)
         .then( data =>{
           console.log(data.data)
           if (data.data.resultado === true){            

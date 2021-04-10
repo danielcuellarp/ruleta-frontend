@@ -4,9 +4,11 @@ import Home from '../views/Home.vue'
 import Ruleta from '../views/Ruleta.vue'
 import Usuario from '../views/Usuario.vue'
 import Registrar from '../views/Registrar.vue'
+import store from '../store';
 
 Vue.use(VueRouter)
 
+// Rutas
 const routes = [
   {
     path: '/',
@@ -16,12 +18,14 @@ const routes = [
   {
     path: '/ruleta',
     name: 'Ruleta',
-    component: Ruleta
+    component: Ruleta,
+    meta: { requiredAuth: true }
   },
   {
     path: '/usuario',
     name: 'Usuario',
-    component: Usuario
+    component: Usuario,
+    meta: { requiredAuth: true }
   },
   {
     path: '/registrar',
@@ -35,5 +39,19 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+// Seguridad en las paginas
+// si no estoy logueado devolver al login
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiredAuth)) {
+      if (!store.state.userLogged) {
+          next({ path: '/' });
+      } else {
+          next();
+      }
+  } else {
+      next();
+  }
+});
 
 export default router

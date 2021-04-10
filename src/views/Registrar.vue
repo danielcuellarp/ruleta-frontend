@@ -44,12 +44,13 @@ export default {
         "name": this.name
       };
       // Consulto la api para obtener el usuario
-      axios.post('http://localhost:3000/api/users/', json)
+      axios.post('users', json)
       .then( data =>{
         if (data.data._id === undefined){
           this.error = 'Ya existe una cuenta con ese correo.'
         } else{
           localStorage.usuario = data.data._id;
+          this.$store.dispatch("saveUserLogged", data.data._id)
           this.$router.push('ruleta');
         }        
       })
