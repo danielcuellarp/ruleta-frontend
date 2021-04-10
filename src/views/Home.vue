@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="container home">
     <form v-on:submit.prevent="login">
       <div class="form-group">
         <label for="exampleInputEmail1">Correo</label>
@@ -14,12 +14,11 @@
     <div class="alert alert-danger" role="alert" v-if="error">
         {{errorMessage}}
     </div>
+    <a v-on:click="registrar" href="#" class="badge badge-light">¿No tienes cuenta? Registrate aqui.</a>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-
 import axios from 'axios';
 
 export default {
@@ -53,6 +52,9 @@ export default {
           this.errorMessage = data.data.error;
         }
       })
+    },
+    registrar(){
+      this.$router.push('registrar');
     }
   }
 }
