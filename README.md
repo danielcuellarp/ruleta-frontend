@@ -1,24 +1,21 @@
-# ruleta-frontend
+### descripcion
+Frontend que consume una api para el manejo de una ruleta.
+### datos tecnicos
+Lenguaje: Vue.js
 
-## Project setup
-```
+Estilos: Bootstrap
+### url:
+https://ruleta-danielcuellarp.netlify.app
+### backend
+url: https://ruleta-danielcuellarp.herokuapp.com
+
+codigo fuente: https://github.com/danielcuellarp/ruleta-backend
+### configuracion proyecto
+variables de entorno:
+ - VUE_APP_API
+# _script modulos_
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
+# _script ejecucion desarrollo_
 npm run serve
-```
-
-### Compiles and minifies for production
-```
+# _script ejecucion produccion_
 npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
