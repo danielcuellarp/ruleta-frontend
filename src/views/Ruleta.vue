@@ -8,11 +8,10 @@
         <a v-on:click="salir" class="nav-link" href="#">Salir</a>
       </li>
     </ul>
-
     <div class="container">
       <h2>Hola {{name}}</h2>
       <div class="card">
-      <div class="card-body">
+        <div class="card-body">
         <h5 class="card-title">Apuesta</h5>
         <p class="card-text">Seleccione el color de su apuesta y digite el dinero a apostar.</p>
         <div class="input-group mb-3">
@@ -36,9 +35,14 @@
         <div v-if="apuestaMessage" class="alert alert-info" role="alert">
            {{apuestaMessage}}
         </div>
+        </div>
       </div>
     </div>
+    
+    <div>
+      <Modal ref="modal" :msg="apuestaMessage"></Modal>
     </div>
+
   </div>
 </template>
 
@@ -46,6 +50,9 @@
 import axios from 'axios';
 
 export default {
+  components: {
+      Modal: () => import("./Modal"),
+  },
   name: "Ruleta",
   data: function(){
     return {
@@ -74,7 +81,7 @@ export default {
         if(this.money <= 1000){
           this.moneyHelp = "Tienes el minimo permitido, vas All in."
         } else {
-          this.moneyHelp = `Dinero disponible: ${this.moneyOriginal} (Solo puede apostar entre el 11% y 19%).`
+          this.moneyHelp = `Dinero disponible: ${this.moneyOriginal} (Solo puedes apostar entre el 11% y 19%).`
         }
       })
     },
@@ -91,20 +98,30 @@ export default {
     },
 
     // Jugar apuesta
-    apuesta(){
+    async apuesta(){
       this.error = false
       this.apuestaMessage = ""
-
+      let minApuesta = this.moneyOriginal * 0.11
+      let maxApuesta = this.moneyOriginal * 0.19
+      
+      // Validaciones
       if (this.color === ""){
         this.error = true
         this.errorMessage = "Debes seleccionar un color para la apuesta."
       } else if (this.money === 0){
         this.error = true
         this.errorMessage = "El valor de la apuesta no puede ser cero."
-      } else if(this.money >= this.moneyOriginal){
+      } else if(this.money > this.moneyOriginal){
         this.error = true
         this.errorMessage = "El valor de la apuesta es mayor al dinero disponible."
-      } else { 
+      } else if (this.moneyOriginal > 1000 && ((this.money < minApuesta) || (this.money > maxApuesta))) {
+        this.error = true
+        this.errorMessage = `Solo puedes apostar entre ${minApuesta} y ${maxApuesta}.`
+      }else { 
+        if (this.moneyOriginal <= 1000){
+          this.money = this.moneyOriginal
+        }
+
         let json = {
           color: this.color,
           money: this.money,
